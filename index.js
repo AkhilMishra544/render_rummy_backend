@@ -17,6 +17,7 @@ mongoose.connect(process.env.MONGO_URI, {
 app.use('/auth', require('./routes/auth'));
 app.use('/wallet', require('./routes/wallet'));
 app.use('/game', require('./routes/game'));
+app.use('/admin', require('./routes/admin'));
 
 // Admin route (secured)
 app.get('/admin', (req, res) => {
