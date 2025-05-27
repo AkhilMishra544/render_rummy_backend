@@ -7,22 +7,36 @@ dotenv.config();
 app.use(express.json());
 
 mongoose.connect(process.env.MONGO_URI, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true
-})
-.then(() => console.log("✅ MongoDB Connected"))
-.catch((err) => console.error("❌ Mongo Error:", err));
+  useNewUrlParser: true,
+  useUnifiedTopology: true
+}).then(() => console.log("MongoDB connected"))
+  .catch(err => console.error("Mongo error:", err));
 
-// Load routes
 app.use('/auth', require('./routes/auth'));
 app.use('/wallet', require('./routes/wallet'));
-app.use('/game', require('./routes/game'));
+app.use('/game', require('./routes/game')); 
 app.use('/admin', require('./routes/admin'));
 
-// Health check
+app.get('/admin', (req, res) => {
+  const adminSecret = req.headers['x-admin-secret'];
+
+  if (adminSecret !== process.env.ADMIN_SECRET) {
+return res.status(401).json({ error: 'Unauthorized' });
+}
+
+res.json({
+   status: 'Admin access granted
+   usersCount: 1234,
+   gamesPlayed: 567,
+   walletBalance: 89000,
+   uptime: process.uptime(),
+   timestamp: new Date()
+  });
+});
+
 app.get('/', (req, res) => {
-    res.send("Backend is Live ✅");
+res.send("Backend is Live");
 });
 
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => console.log(`✅ Server running on port ${PORT}`));
+app.listen(PORT, () => console.log('Server running on port ${PORT}"));
