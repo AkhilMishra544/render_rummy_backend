@@ -13,27 +13,13 @@ mongoose.connect(process.env.MONGO_URI, {
 .then(() => console.log("✅ MongoDB Connected"))
 .catch((err) => console.error("❌ Mongo Error:", err));
 
+// Load routes
 app.use('/auth', require('./routes/auth'));
 app.use('/wallet', require('./routes/wallet'));
 app.use('/game', require('./routes/game'));
 app.use('/admin', require('./routes/admin'));
 
-
-app.get('/admin', (req, res) => {
-    const adminSecret = req.headers['x-admin-secret'];
-
-    if (adminSecret !== process.env.ADMIN_SECRET) {
-        return res.status(401).json({ error: 'Unauthorized' });
-    }
-    res.json({
-        status: 'Admin access granted ✅',
-        usersCount: 1234,
-        gamesPlayed: 567,
-        walletBalance: 89000,
-        uptime: process.uptime(),
-        timestamp: new Date()
-    });
-});
+// Health check
 app.get('/', (req, res) => {
     res.send("Backend is Live ✅");
 });
